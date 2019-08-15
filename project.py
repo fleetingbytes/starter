@@ -26,9 +26,6 @@ def create_config_file(path_to_config_file: pathlib.Path, cfgparser: configparse
     logger.debug("creating cfg")
     cfgparser.add_section("Paths")
     cfgparser.set("Paths", f"# Set the absolute paths. They must be in quotes, like this: \"{pathlib.Path.cwd()}\"")
-    cfgparser.set("Paths", "path_to_trace_folder", r'''"D:\trace"''')
-    cfgparser.set("Paths", "path_to_hmi_monitor", r'''"D:\HMIMonitor-H42.81.3"''')
-    cfgparser.set("Paths", "path_to_7zip_exe", r'''"D:\7zip\7za.exe"''')
     with open(path_to_config_file, mode="w", encoding="utf-8") as configfh:
         cfgparser.write(configfh)
     return read_config_file(path_to_config_file, cfgparser)
@@ -45,10 +42,10 @@ def debug_delete_config(path_to_configfile: pathlib.Path) -> None:
 
 
 if __name__ == "__main__":
-    logger.debug("Extractor started")
-    path_to_config_file = pathlib.Path("extractor.cfg.txt")
+    logger.debug("Program started")
+    path_to_config_file = pathlib.Path("config.ini")
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
-    config = read_config_file(pathlib.Path("extractor.cfg.txt"), config)
+    config = read_config_file(pathlib.Path("config.ini"), config)
     # debug_delete_config(path_to_config_file)
-    logger.debug("Extractor ended")
+    logger.debug("Program ended")
