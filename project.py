@@ -46,6 +46,6 @@ if __name__ == "__main__":
     path_to_config_file = pathlib.Path("config.ini")
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform = str
-    config = read_config_file(pathlib.Path("config.ini"), config)
-    # debug_delete_config(path_to_config_file)
+    config = read_config_file(pathlib.Path(path_to_config_file), config)
+    debug_delete_config(path_to_config_file)
     logger.debug("Program ended")
