@@ -1,9 +1,9 @@
-2019-08-15 23:07:52,354     DEBUG project <module>: Program started
-2019-08-15 23:07:52,355     DEBUG project read_config_file: reading cfg
-2019-08-15 23:07:52,355      INFO project read_config_file: config file missing, creating a new one
-2019-08-15 23:07:52,355     DEBUG project create_config_file: creating cfg
-2019-08-15 23:07:52,356     DEBUG project read_config_file: reading cfg
-2019-08-15 23:07:52,356      INFO project <module>: Path to data: WindowsPath('G:/Sven/Python/starter')
-2019-08-15 23:07:52,356     DEBUG project debug_delete_config: Deleting config file
-2019-08-15 23:07:52,356     DEBUG project debug_delete_config: Config file deleted
-2019-08-15 23:07:52,356     DEBUG project <module>: Program ended
+2019-08-15 23:38:26,919     DEBUG project <module>: Program started
+2019-08-15 23:38:26,919     DEBUG project read_config_file: reading cfg
+2019-08-15 23:38:26,919      INFO project read_config_file: config file missing, creating a new one
+2019-08-15 23:38:26,919     DEBUG project create_config_file: creating cfg
+2019-08-15 23:38:26,920     DEBUG project read_config_file: reading cfg
+2019-08-15 23:38:26,921      INFO project <module>: Path to data: G:\Sven\Python\starter
+2019-08-15 23:38:26,921     DEBUG project debug_delete_config: Deleting config file
+2019-08-15 23:38:26,921     DEBUG project debug_delete_config: Config file deleted
+2019-08-15 23:38:26,921     DEBUG project <module>: Program ended

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class Config():
     def __init__(self, config: configparser.ConfigParser) -> None:
         self.config = config
-        self.path_to_data = pathlib.Path(self.config.get("Paths", "path_to_data").strip('"'))
+        self.path_to_data = pathlib.Path(self.config.get("Paths", "path_to_data"))
 
 
 def read_config_file(path_to_config_file: pathlib.Path, cfgparser: configparser.ConfigParser) -> configparser.ConfigParser:
@@ -55,6 +55,6 @@ if __name__ == "__main__":
     config_parser.optionxform = str
     parsed_config = read_config_file(pathlib.Path(path_to_config_file), config_parser)
     config = Config(parsed_config)
-    logger.info(f"Path to data: {repr(config.path_to_data)}")
+    logger.info(f"Path to data: {config.path_to_data}")
     debug_delete_config(path_to_config_file)
     logger.debug("Program ended")
