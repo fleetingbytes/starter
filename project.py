@@ -20,8 +20,8 @@ def read_config_file(path_to_config_file: pathlib.Path, cfgparser: configparser.
     Reads current configuration file or creates a new one with a default configuration
     """
     try:
-        logger.debug("reading cfg")
         cfgparser.read_file(open(path_to_config_file))
+        logger.debug(f"{path_to_config_file} read")
         return cfgparser
     except FileNotFoundError:
         logger.info("config file missing, creating a new one")
@@ -38,6 +38,14 @@ def create_config_file(path_to_config_file: pathlib.Path, cfgparser: configparse
     return read_config_file(path_to_config_file, cfgparser)
 
 
+def read_or_create_config(path_to_config_file: pathlib.Path) -> configparser.ConfigParser:
+    config_parser = configparser.ConfigParser(allow_no_value=True)
+    config_parser.optionxform = str
+    parsed_config = read_config_file(pathlib.Path(path_to_config_file), config_parser)
+    config = Config(parsed_config)
+    return config
+
+
 def debug_delete_config(path_to_configfile: pathlib.Path) -> None:
     """
     Serves debugging purposes. Deletes the config file.
@@ -51,10 +59,7 @@ def debug_delete_config(path_to_configfile: pathlib.Path) -> None:
 if __name__ == "__main__":
     logger.debug("Program started")
     path_to_config_file = pathlib.Path("config.ini")
-    config_parser = configparser.ConfigParser(allow_no_value=True)
-    config_parser.optionxform = str
-    parsed_config = read_config_file(pathlib.Path(path_to_config_file), config_parser)
-    config = Config(parsed_config)
+    config = read_or_create_config(path_to_config_file)
     logger.info(f"Path to data: {config.path_to_data}")
     debug_delete_config(path_to_config_file)
     logger.debug("Program ended")
