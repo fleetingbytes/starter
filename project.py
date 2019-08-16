@@ -30,13 +30,13 @@ def read_config_file(path_to_config_file: pathlib.Path) -> configparser.ConfigPa
         return create_config_file(path_to_config_file, config_parser)
 
 
-def create_config_file(path_to_config_file: pathlib.Path, cfgparser: configparser.ConfigParser) -> configparser.ConfigParser:
+def create_config_file(path_to_config_file: pathlib.Path, config_parser: configparser.ConfigParser) -> configparser.ConfigParser:
     logger.debug(f"creating {path_to_config_file}")
-    cfgparser.add_section("Paths")
-    cfgparser.set("Paths", f"# Set the absolute paths.")
-    cfgparser.set("Paths", "path_to_data", f"{pathlib.Path.cwd()}")
+    config_parser.add_section("Paths")
+    config_parser.set("Paths", f"# Set the absolute paths.")
+    config_parser.set("Paths", "path_to_data", f"{pathlib.Path.cwd()}")
     with open(path_to_config_file, mode="w", encoding="utf-8") as configfh:
-        cfgparser.write(configfh)
+        config_parser.write(configfh)
     return read_config_file(path_to_config_file)
 
 

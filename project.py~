@@ -40,12 +40,6 @@ def create_config_file(path_to_config_file: pathlib.Path, cfgparser: configparse
     return read_config_file(path_to_config_file)
 
 
-# def read_or_create_config(path_to_config_file: pathlib.Path) -> configparser.ConfigParser:
-    # parsed_config = read_config_file(pathlib.Path(path_to_config_file), config_parser)
-    # config = Config(parsed_config)
-    # return config
-
-
 def debug_delete_config(path_to_configfile: pathlib.Path) -> None:
     """
     Serves debugging purposes. Deletes the config file.
@@ -60,5 +54,5 @@ if __name__ == "__main__":
     path_to_config_file = pathlib.Path("config.ini")
     config = read_config_file(path_to_config_file)
     logger.info(f"Path to data: {config.path_to_data}")
-    # debug_delete_config(path_to_config_file)
+    debug_delete_config(path_to_config_file)
     logger.debug("Program ended")
