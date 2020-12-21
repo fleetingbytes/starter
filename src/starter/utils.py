@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 program_name = home_dir_name = "starter"
-dir_name = ".starter"
+dir_name = "".join((".", program_name))
 configuration_file_name = "starter_configuration.ini"
 
 
