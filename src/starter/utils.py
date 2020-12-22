@@ -29,7 +29,7 @@ def provide_dir(directory: pathlib.Path) -> pathlib.Path:
                 break
             except FileNotFoundError:
                 provide_dir(directory.parent)
-                provide_dir(directory)
+                continue
             except FileExistsError:
                 logger.debug(f"{directory} already exists")
                 break
