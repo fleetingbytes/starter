@@ -33,7 +33,7 @@ def create_dict_config(directory: pathlib.Path, all_log: str, info_log: str, err
     given by the arguments
     """
     file_formatter_conf = {
-        "format": "{message:<50s} {levelname:>9s} {asctime}.{msecs:03.0f} {module} {funcName} ",
+        "format": "{asctime}.{msecs:03.0f} {levelname:>9s} {module} {funcName} {message:<50s}",
         "style": "{",
         # "datefmt": "%Y-%m-%d %H:%M:%S",
         "datefmt": "%H:%M:%S",
