@@ -40,12 +40,12 @@ def get_property(property: str, path_to_init_file: pathlib.Path) -> str:
 setup(
         name=project_name,
         version=get_property("version", path_to_init_file.parent / "version.py"),
-        description="Your description here",
+        description="starter description",
         long_description=long_description,
         long_description_content_type="text/markdown",
         author=get_property("__author__", path_to_init_file),
         author_email=get_property("__author_email__", path_to_init_file),
-        url="https://github.com/Nagidal/starter",
+        url="https://gitlab.iavgroup.local/tc/tc-f/tc-f25/WebAppPlatform/starter",
         classifiers=[
             "Development Status :: 2 - Pre-Alpha",
             # "Development Status :: 3 - Alpha",
@@ -65,7 +65,7 @@ setup(
             "Operating System :: POSIX :: Linux",
             "Operating System :: MacOS :: MacOS X",
             ],
-        keywords="Your keywords here",
+        keywords="starter keywords",
         package_dir={"": package_dir},
         packages=find_packages(where=package_dir),
         package_data={
