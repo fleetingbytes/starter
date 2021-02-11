@@ -39,9 +39,9 @@ path_to_dir = setup_logging_directory(pathlib.Path.home() / utils.dir_name)
 
 
 # Setup logging part 2
-logger.add(path_to_dir / "trace.log", level="TRACE", encoding="utf-8")
-logger.add(path_to_dir / "debug.log", level="DEBUG", encoding="utf-8")
-logger.add(path_to_dir / "info.log", level="INFO", encoding="utf-8")
+logger.add(path_to_dir / "trace.log", level="TRACE", mode="w", encoding="utf-8")
+logger.add(path_to_dir / "debug.log", level="DEBUG", mode="w", encoding="utf-8")
+logger.add(path_to_dir / "info.log", level="INFO", mode="w", encoding="utf-8")
 logger.add(sys.stdout, level="INFO", format="<level>{message}</level>")
 
 

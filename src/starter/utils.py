@@ -4,6 +4,7 @@
 from loguru import logger
 import pathlib
 import functools
+import time
 
 
 program_name = home_dir_name = "starter"
@@ -25,6 +26,18 @@ def logger_wraps(*, entry=True, exit=True, level="TRACE"):
             return result
         return wrapped
     return wrapper
+
+
+def timeit(func):
+    name = func.__name__
+    @functools.wraps(func)
+    def wrapped(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        logger.trace("Function '{}' executed in {:f} s", name, end - start)
+        return result
+    return wrapped
 
 
 def provide_dir(directory: pathlib.Path) -> pathlib.Path:
