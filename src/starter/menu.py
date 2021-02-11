@@ -13,9 +13,11 @@ class Text_Menu:
     """
     Command prompt menu
     """
+    @utils.logger_wraps()
     def __init__(self, menu_name: str, heading: str) -> None:
         self.menu_name = menu_name
         self.heading = heading
+    @utils.logger_wraps()
     def wait_key(self) -> str:
         """
         Wait for a key press on the console and return it.
@@ -41,14 +43,17 @@ class Text_Menu:
         if isinstance(result, bytes):
             result = str(result, encoding="utf-8").upper()
         return result
+    @utils.logger_wraps()
     def show_heading(self) -> None:
         """
         Renders the Heading of the menu in the logger at INFO level
         """
         for line in self.heading.split("\n"):
             logger.info(line)
+    @utils.logger_wraps()
     def show_separator(self) -> None:
         logger.info("\n" + "·" * 42)
+    @utils.logger_wraps()
     def show_options(self, options: collections.OrderedDict) -> None:
         """
         Renders a command prompt menu for each exrtacted traces file.
@@ -57,10 +62,13 @@ class Text_Menu:
         for key, text in options.items():
             logger.info(f"     ({key}) {text}")
         logger.info("")
+    @utils.logger_wraps()
     def show_reason(self, reason: str) -> None:
         logger.warning("\n" + utils.warn(reason))
+    @utils.logger_wraps()
     def show_comment(self, comment: str) -> None:
         logger.info(comment + "\n")
+    @utils.logger_wraps()
     def choose_from(self, options: collections.OrderedDict) -> str:
         self.show_options(options)
         choice = None

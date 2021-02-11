@@ -38,8 +38,8 @@ class Config():
     """
     Holds all confituration data readily available as attributes
     """
+    @utils.logger_wraps()
     def __init__(self, cfg_path: pathlib.Path, autoconfig: bool) -> None:
-        logger.debug(f"Config.__init__() started")
         self.error_regex = re.compile(r"""config_parser\.get.*\(["'](?P<section>\w+)["'], *["'](?P<variable>\w+)["']\)""")
         self.path_to_config_file = cfg_path
         self.path_to_home = utils.provide_dir(self.path_to_config_file.parent)
@@ -58,13 +58,15 @@ class Config():
             self.create_config_file()
             self.read_config_and_check_syntax()
             self.parse_config_and_check_values()
-        logger.debug(f"Config.__init__() finished")
+    @utils.logger_wraps()
     def __enter__(self):
         return self
+    @utils.logger_wraps()
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         # Deleting config during development. Comment after release.
         # self.delete_config_file()
         pass
+    @utils.logger_wraps()
     def reset_parser(self) -> None:
         """
         Erases all data from previous config file parsing attempt by
@@ -72,23 +74,22 @@ class Config():
         """
         self.config_parser = configparser.ConfigParser(allow_no_value=True)
         self.config_parser.optionxform = str
-        logger.debug(f"config_parser reset")
+        logger.trace(f"config_parser reset")
+    @utils.logger_wraps()
     def read_config_file(self) -> None:
         """
         Reads current configuration file
         """
-        logger.debug(f"read_config_file() started")
         self.reset_parser()
-        logger.debug(f"config_parser might raise FileNotFoundError")
+        logger.trace(f"config_parser might raise FileNotFoundError")
         self.config_parser.read_file(open(self.path_to_config_file))
-        logger.debug(f"config_parser did not raise FileNotFoundError")
+        logger.trace(f"config_parser did not raise FileNotFoundError")
         logger.debug(f"{self.path_to_config_file.name} read successfully")
-        logger.debug(f"read_config_file() finished")
+    @utils.logger_wraps()
     def create_config_file(self) -> None:
         """
         Creates the default config file
         """
-        logger.debug(f"create_config_file() started")
         self.reset_parser()
         self.config_parser.add_section("Local Paths")
         self.config_parser.set("Local Paths", "# You can write paths in Windows format or Linux/POSIX format.")
@@ -97,31 +98,30 @@ class Config():
         self.config_parser.set("Local Paths", "# does not interfere with the path parser.")
         self.config_parser.set("Local Paths", "")
         for path in self.configured_paths:
-            logger.debug(f"Setting {path.internal_name} to path.conf_path = {str(path.conf_path)} in the config file")
+            logger.trace(f"Setting {path.internal_name} to path.conf_path = {str(path.conf_path)} in the config file")
             self.config_parser.set("Local Paths", f"# {path.comment[0].capitalize()}{path.comment[1:]}")
             self.config_parser.set("Local Paths", f"{path.internal_name}", f"{path.conf_path}")
         with open(self.path_to_config_file, mode="w", encoding="utf-8") as configfh:
             self.config_parser.write(configfh)
         logger.debug(f"Config file written")
-        logger.debug(f"create_config_file() finished")
+    @utils.logger_wraps()
     def read_config_and_check_syntax(self) -> None:
-        logger.debug(f"read_config_and_check_syntax() started")
         while True:
             try:
                 self.read_config_file()
                 break
             except FileNotFoundError:
-                logger.debug(f"FileNotFoundError was raised, handling it")
+                logger.trace(f"FileNotFoundError was raised, handling it")
                 logger.info("Config file missing, creating new default config file")
                 self.create_config_file()
-                logger.debug(f"Finished handling FileNotFoundError")
+                logger.trace(f"Finished handling FileNotFoundError")
                 continue
             except UnicodeDecodeError as err:
                 raise errors.WrongConfiguration(f"Could not read configuration", err)
             except AttributeError as err:
                 # happens when the config file syntax is so currpt that config_parser cannot read it
                 raise errors.WrongConfiguration(f"Could not read configuration, file syntax might be wrong", err)
-        logger.debug(f"read_config_and_check_syntax() finished")
+    @utils.logger_wraps()
     def check_path(self, path: pathlib.Path) -> None:
         """
         Check whether the path is syntactically correct.
@@ -130,31 +130,33 @@ class Config():
         e.g. "*", "?", "|" etc.
         """
         assert path.exists() in (True, False)
+    @utils.logger_wraps()
     def getpath(self, section: str, value: str) -> pathlib.Path:
         """
         Returns value from config file as pathlib.Path object
         """
         return pathlib.Path(self.config_parser.get(section, value))
+    @utils.logger_wraps()
     def geturl(self, section: str, raw_url: str) -> urllib.parse.ParseResult:
         """
         Parses a URL and returns urllib ParseResult
         """
         return urllib.parse.urlparse(self.config_parser.get(section, raw_url))
+    @utils.logger_wraps()
     def parse_config_and_check_values(self) -> None:
         """
         Parses the configuration files into usable attributes
         and checks whether the values are syntactically correct.
         For example, check if an IPv4 address consists of four chained integers in range(256).
         """
-        logger.debug(f"parse_config_and_check_values() started")
         try:
             for path in self.configured_paths:
                 checked_path = self.getpath("Local Paths", path.internal_name)
                 self.check_path(checked_path)
                 setattr(self, path.internal_name, checked_path)
-                logger.debug(f"Config.{path.internal_name} = {str(getattr(self, path.internal_name))}")
+                logger.trace(f"Config.{path.internal_name} = {str(getattr(self, path.internal_name))}")
                 setattr(getattr(self, "_" + path.internal_name), "conf_path", getattr(self, path.internal_name))
-                logger.debug(f"Config._{path.internal_name}.conf_path = {str(getattr(self, '_' + path.internal_name).conf_path)}")
+                logger.trace(f"Config._{path.internal_name}.conf_path = {str(getattr(self, '_' + path.internal_name).conf_path)}")
         except ValueError as err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exc().splitlines()
@@ -189,21 +191,22 @@ class Config():
         except Exception as err:
             logger.debug(f"Raising WrongConfiguration error because of some general Exception")
             raise errors.WrongConfiguration(f"There is something wrong with {self.path_to_config_file.name}. Please check it carefully or delete it to have it recreated.", err)
-        logger.debug(f"parse_config_and_check_values() finished")
+    @utils.logger_wraps()
     def filter_wrong_paths(self, paths: Iterable[Configured_Path]) -> Tuple[Configured_Path]:
         """
         Returns tuple with all Configured_Paths which don't exist.
         """
         # We need to return a tuple because we need to know the number of wrong paths at all times.
         return tuple(filter(lambda p: not p.conf_path.exists(), paths))
+    @utils.logger_wraps()
     def configure_path(self, path: Configured_Path, manually: bool) -> None:
-        logger.debug(f"configure_path() started")
         if manually:
             logger.debug(f"Configuring path {path.internal_name} manually")
             while True:
                 try:
                     # Path which requires special treatment
                     if False:
+                        logger.debug(f"Special treatment")
                         pass
                     # Normal paths
                     else:
@@ -218,15 +221,14 @@ class Config():
         else:
             logger.debug(f"Configuring paths automatically")
             created_path = utils.provide_dir(path.conf_path)
-        logger.debug(f"created_path {str(created_path)}")
+        logger.trace(f"created_path {str(created_path)}")
         path.conf_path = created_path
-        logger.debug(f"_{path.internal_name}.conf_path = {created_path}")
-        logger.debug(f"configure_path() finished")
+        logger.trace(f"_{path.internal_name}.conf_path = {created_path}")
+    @utils.logger_wraps()
     def wizard(self, wrong_paths: Tuple[Configured_Path], autoconfig: bool) -> None:
         """
         Configuration wizard helps the user to correct the paths which don't exist
         """
-        logger.debug(f"wizard() started")
         wiz_menu = menu.Text_Menu(menu_name="Configuration Wizard", heading=r"""
  ____ ____ __ _ ____ _ ____ _  _ ____ ____ ___ _ ____ __ _
  |___ [__] | \| |--- | |__, |__| |--< |--|  |  | [__] | \|
@@ -257,7 +259,7 @@ class Config():
             if choice == "A":
                 autoconfig = True
                 choice = "C"
-            logger.debug(f"Your choice: {choice}")
+            logger.success(f"Your choice: {choice}")
             if choice == "C":
                 self.configure_path(path, manually=False)
             elif choice == "M":
@@ -266,7 +268,6 @@ class Config():
                 logger.debug(f"Raising WrongConfiguration error")
                 raise errors.WrongConfiguration(f"Who needs a wizard, when you can edit `{self.path_to_config_file.name}` yourself, right?", None)
         self.create_config_file()
-        logger.debug(f"wizard() finished. All paths should be configured properly now")
 
 
 if __name__ == "__main__":

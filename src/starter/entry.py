@@ -2,13 +2,14 @@
 # PYTHON_ARGCOMPLETE_OK
 
 
-from loguru import logger
 import sys
 import pathlib
 import argparse
 import argcomplete
+import functools
 from argcomplete.completers import EnvironCompleter as EC
 from itertools import filterfalse
+from loguru import logger
 # Own modules
 from starter import errors
 from starter import utils
@@ -16,7 +17,12 @@ from starter import config_loader
 from starter import version
 
 
-# Setup logging
+# Setup logging part 1
+logger = logger.opt(colors=True)
+logger.opt = functools.partial(logger.opt, colors=True)
+logger.remove()
+
+
 def setup_logging_directory(directory: pathlib.Path) -> pathlib.Path:
     """
     Returns a logger and a path to directory where the logs are saved
@@ -30,9 +36,13 @@ def setup_logging_directory(directory: pathlib.Path) -> pathlib.Path:
 
 
 path_to_dir = setup_logging_directory(pathlib.Path.home() / utils.dir_name)
-logger.remove()
+
+
+# Setup logging part 2
 logger.add(path_to_dir / "trace.log", level="TRACE", encoding="utf-8")
-logger.add(sys.stdout, level="DEBUG", format="<level>{message}</level>")
+logger.add(path_to_dir / "debug.log", level="DEBUG", encoding="utf-8")
+logger.add(path_to_dir / "info.log", level="INFO", encoding="utf-8")
+logger.add(sys.stdout, level="INFO", format="<level>{message}</level>")
 
 
 def argument_parser() -> argparse.ArgumentParser:
@@ -45,6 +55,7 @@ def argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
+@utils.logger_wraps()
 def run(config: config_loader.Config) -> None:
     logger.trace("Trace message")
     logger.debug("Debug message")
@@ -55,11 +66,11 @@ def run(config: config_loader.Config) -> None:
     logger.critical("Critical message")
 
 
+@utils.logger_wraps()
 def cli_start(version) -> None:
     """
     Entry point for any component start from the commmand line
     """
-    logger.trace(f"{utils.program_name} started")
     parser = argument_parser()
     argcomplete.autocomplete(parser)
     cli_args = parser.parse_args()
@@ -76,7 +87,6 @@ def cli_start(version) -> None:
         logger.error(err.message)
     except Exception as err:
         logger.exception(f"Uncaught exception {repr(err)} occurred.")
-    logger.trace(f"{utils.program_name} ended")
 
 
 if __name__ == "__main__":

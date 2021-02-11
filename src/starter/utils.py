@@ -3,11 +3,28 @@
 
 from loguru import logger
 import pathlib
+import functools
 
 
 program_name = home_dir_name = "starter"
 dir_name = "".join((".", program_name))
 configuration_file_name = "starter_configuration.ini"
+
+
+def logger_wraps(*, entry=True, exit=True, level="TRACE"):
+    def wrapper(func):
+        name = func.__name__
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            logger_ = logger.opt(depth=1)
+            if entry:
+                logger_.log(level, "Entering '{}' (args={}, kwargs={})", name, args, kwargs)
+            result = func(*args, **kwargs)
+            if exit:
+                logger_.log(level, "Exiting '{}' (result={})", name, result)
+            return result
+        return wrapped
+    return wrapper
 
 
 def provide_dir(directory: pathlib.Path) -> pathlib.Path:
