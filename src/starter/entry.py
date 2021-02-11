@@ -2,15 +2,14 @@
 # PYTHON_ARGCOMPLETE_OK
 
 
+from loguru import logger
+import sys
 import pathlib
-import logging
-import logging.config
 import argparse
 import argcomplete
 from argcomplete.completers import EnvironCompleter as EC
 from itertools import filterfalse
 # Own modules
-from starter import logging_conf
 from starter import errors
 from starter import utils
 from starter import config_loader
@@ -18,23 +17,22 @@ from starter import version
 
 
 # Setup logging
-def setup_logging_directory(directory: pathlib.Path) -> tuple[logging.Logger, pathlib.Path]:
+def setup_logging_directory(directory: pathlib.Path) -> pathlib.Path:
     """
     Returns a logger and a path to directory where the logs are saved
     """
     try:
         path_to_dir = utils.provide_dir(directory)
-        logger_config = logging_conf.create_dict_config(path_to_dir, "debug.log", "info.log", "errors.log")
     except FileExistsError:
         logger.error(f"Failed to create the directory `{str(path_to_dir)}` because it already exists as a file.")
         logger.error(f"Please create the directory `{str(path_to_dir)}`")
-    finally:
-        logging.config.dictConfig(logger_config)
-        logger = logging.getLogger(__name__)
-    return logger, path_to_dir
+    return path_to_dir
 
 
-logger, path_to_dir = setup_logging_directory(pathlib.Path.home() / utils.dir_name)
+path_to_dir = setup_logging_directory(pathlib.Path.home() / utils.dir_name)
+logger.remove()
+logger.add(path_to_dir / "trace.log", level="TRACE", encoding="utf-8")
+logger.add(sys.stdout, level="DEBUG", format="<level>{message}</level>")
 
 
 def argument_parser() -> argparse.ArgumentParser:
@@ -48,18 +46,24 @@ def argument_parser() -> argparse.ArgumentParser:
 
 
 def run(config: config_loader.Config) -> None:
-    pass
+    logger.trace("Trace message")
+    logger.debug("Debug message")
+    logger.info("Info message")
+    logger.success("Success message")
+    logger.warning("Warning message")
+    logger.error("Error message")
+    logger.critical("Critical message")
 
 
 def cli_start(version) -> None:
     """
     Entry point for any component start from the commmand line
     """
-    logger.debug(f"{utils.program_name} started")
+    logger.trace(f"{utils.program_name} started")
     parser = argument_parser()
     argcomplete.autocomplete(parser)
     cli_args = parser.parse_args()
-    logger.debug(f"Parsed arguments: {cli_args}")
+    logger.trace(f"Parsed arguments: {cli_args}")
     path_to_config = path_to_dir / utils.configuration_file_name
     try:
         if cli_args.version:
@@ -72,7 +76,7 @@ def cli_start(version) -> None:
         logger.error(err.message)
     except Exception as err:
         logger.exception(f"Uncaught exception {repr(err)} occurred.")
-    logger.debug(f"{utils.program_name} ended")
+    logger.trace(f"{utils.program_name} ended")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 
 
-import logging
+from loguru import logger
 import pathlib
-
-
-# Setup logging
-logger = logging.getLogger(__name__)
 
 
 program_name = home_dir_name = "starter"
@@ -20,7 +16,7 @@ def provide_dir(directory: pathlib.Path) -> pathlib.Path:
     If not, it will try to create one. 
     """
     if directory.exists() and directory.is_dir():
-        logger.debug(f"Found directory {str(directory)}")
+        logger.trace(f"Found directory {str(directory)}")
     else:
         while True:
             try:
@@ -31,7 +27,7 @@ def provide_dir(directory: pathlib.Path) -> pathlib.Path:
                 provide_dir(directory.parent)
                 continue
             except FileExistsError:
-                logger.debug(f"{directory} already exists")
+                logger.trace(f"{directory} already exists")
                 break
     return directory
 
