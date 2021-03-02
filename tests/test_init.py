@@ -8,7 +8,7 @@ import pathlib
 import sys
 
 
-@pytest.mark.skipif(pathlib.Path(sys.prefix) != pathlib.Path(r"C:\ProgramData\Anaconda3\envs\claw"), reason="Test only in native enironment")
+@pytest.mark.skipif(pathlib.Path(sys.prefix) != pathlib.Path(r"C:\ProgramData\Anaconda3\envs\starter"), reason="Test only in native enironment")
 def test_date():
     starter_date = datetime.datetime.strptime(starter.__date__, "%Y-%m-%d")
     today = datetime.datetime.today()
