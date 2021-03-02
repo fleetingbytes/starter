@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
 
-import pathlib
-
-
 class Error(Exception):
     """
     Base class for starter-specific errors
