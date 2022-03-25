@@ -40,12 +40,12 @@ def get_property(property: str, path_to_init_file: pathlib.Path) -> str:
 setup(
         name=project_name,
         version=get_property("version", path_to_init_file.parent / "version.py"),
-        description="starter description",
+        description="A kit for test automation with MLP and RIS",
         long_description=long_description,
         long_description_content_type="text/markdown",
         author=get_property("__author__", path_to_init_file),
         author_email=get_property("__author_email__", path_to_init_file),
-        url="https://gitlab.iavgroup.local/tc/tc-f/tc-f25/WebAppPlatform/starter",
+        url=get_property("__repository__", path_to_init_file),
         classifiers=[
             "Development Status :: 2 - Pre-Alpha",
             # "Development Status :: 3 - Alpha",
@@ -55,8 +55,8 @@ setup(
             "Intended Audience :: Developers",
             "Intended Audience :: System Administrators",
             "Environment :: Console",
-            # "Topic :: Software Development :: Testing",
-            "Topic :: Utilities",
+            "Topic :: Software Development :: Testing",
+            # "Topic :: Utilities",
             "License :: OSI Approved :: MIT License",
             "Natural Language :: English",
             "Programming Language :: Python :: 3.9",
@@ -65,7 +65,7 @@ setup(
             "Operating System :: POSIX :: Linux",
             "Operating System :: MacOS :: MacOS X",
             ],
-        keywords="starter keywords",
+        keywords="gherkin test automation",
         package_dir={"": package_dir},
         packages=find_packages(where=package_dir),
         package_data={
@@ -74,7 +74,7 @@ setup(
         python_requires=">=3.9",
         install_requires=requirements,
         entry_points={
-            "console_scripts": [f"{project_name} = {project_name}.__main__:{project_name}",
+            "console_scripts": [f"{project_name} = {project_name}.__main__:main",
                 ],
             },
         platforms=["any"],
