@@ -32,7 +32,7 @@ Linux users please follow argcomplete's documentation to create and register the
 
 ### Pip setup
 
-Your pip configuration is stored in your user folder under `\AppData\Roaming\pip\pip.ini` (hidden), linux users will find it [elsewhere][linuxpip]]). If the folder or file does not exist, create it. It content should look like this:
+Your pip configuration is stored in your user folder under `\AppData\Roaming\pip\pip.ini` (hidden), linux users will find it [elsewhere][linuxpip]). If the folder or file does not exist, create it. It content should look like this:
 
 ```
 [global]
